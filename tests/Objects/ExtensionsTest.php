@@ -103,7 +103,7 @@ class ExtensionsTest extends TestCase
     /**
      * @return array
      */
-    public function schemasDataProvider(): array
+    public static function schemasDataProvider(): array
     {
         return [
             [Components::class],
