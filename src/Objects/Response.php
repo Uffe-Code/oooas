@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GoldSpecDigital\ObjectOrientedOAS\Objects;
 
+use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Utilities\Arr;
 
 /**
@@ -164,11 +165,17 @@ class Response extends BaseObject
     /**
      * @param int|null $statusCode
      * @return static
+     * @throws InvalidArgumentException
      */
-    public function statusCode(?int $statusCode): self
+    public function statusCode(int|string|null $statusCode): self
     {
         $instance = clone $this;
 
+        if (is_string($statusCode)) {
+            if(!preg_match('/^([1-5]{1})([0-9X]{2})$/', $statusCode)) {
+                throw new InvalidArgumentException('Invalid status code');
+            }
+        }
         $instance->statusCode = $statusCode;
 
         return $instance;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GoldSpecDigital\ObjectOrientedOAS\Tests\Objects;
 
+use GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Example;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Header;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Link;
@@ -167,5 +168,24 @@ class ResponseTest extends TestCase
 
         $this->assertEquals(500, $response->statusCode);
         $this->assertEquals('Internal Server Error', $response->description);
+    }
+
+    /** @test */
+    public function create_with_wildcard_status_works()
+    {
+        $response = Response::create()
+            ->statusCode('2XX')
+            ->description('OK');
+
+        $this->assertSame('2XX', $response->statusCode);
+    }
+
+    /** @test */
+    public function create_with_bad_status_string_fails()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Response::create()
+            ->statusCode('kjell')
+            ->description('OK');
     }
 }
