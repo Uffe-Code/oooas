@@ -166,6 +166,8 @@ class Schema extends BaseObject implements SchemaContract
      */
     protected $additionalProperties;
 
+    protected ?array $allOf = null;
+
     /**
      * @var int|null
      */
@@ -554,12 +556,12 @@ class Schema extends BaseObject implements SchemaContract
      * @throws \GoldSpecDigital\ObjectOrientedOAS\Exceptions\InvalidArgumentException
      * @return static
      */
-    public function required(...$required): self
+    public function required(...$required): static
     {
         // Only allow Schema instances and strings.
         foreach ($required as &$require) {
             // If a Schema instance was passed in then extract it's name string.
-            if ($require instanceof Schema) {
+            if ($require instanceof self) {
                 $require = $require->objectId;
                 continue;
             }
@@ -571,10 +573,11 @@ class Schema extends BaseObject implements SchemaContract
             throw new InvalidArgumentException(
                 sprintf(
                     'The required must either be an instance of [%s] or a string.',
-                    Schema::class
+                    self::class
                 )
             );
         }
+        unset($require);
 
         $instance = clone $this;
 
@@ -593,6 +596,13 @@ class Schema extends BaseObject implements SchemaContract
 
         $instance->properties = $properties ?: null;
 
+        return $instance;
+    }
+
+    public function allOf(SchemaContract ...$schemas): static
+    {
+        $instance = clone $this;
+        $instance->allOf = $schemas;
         return $instance;
     }
 
@@ -781,6 +791,7 @@ class Schema extends BaseObject implements SchemaContract
             'externalDocs' => $this->externalDocs,
             'example' => $this->example,
             'deprecated' => $this->deprecated,
+            'allOf' => $this->allOf,
         ]);
     }
 }

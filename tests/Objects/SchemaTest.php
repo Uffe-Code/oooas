@@ -355,4 +355,34 @@ class SchemaTest extends TestCase
             ],
         ], $response->toArray());
     }
+
+    /** @test */
+    public function create_schema_with_allOf_works()
+    {
+        $string = Schema::string();
+        $number = Schema::number();
+
+        $schema = Schema::create()
+            ->title('Schema title')
+            ->description('Schema description')
+            ->allOf($string, $number);
+
+        $response = MediaType::create()
+            ->schema($schema);
+
+        $this->assertEquals([
+            'schema' => [
+                'title' => 'Schema title',
+                'description' => 'Schema description',
+                'allOf' => [
+                    [
+                        'type' => 'string',
+                    ],
+                    [
+                        'type' => 'number',
+                    ],
+                ],
+            ],
+        ], $response->toArray());
+    }
 }
