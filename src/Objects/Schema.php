@@ -167,6 +167,8 @@ class Schema extends BaseObject implements SchemaContract
     protected $additionalProperties;
 
     protected ?array $allOf = null;
+    protected ?array $anyOf = null;
+    protected ?array $oneOf = null;
 
     /**
      * @var int|null
@@ -606,6 +608,20 @@ class Schema extends BaseObject implements SchemaContract
         return $instance;
     }
 
+    public function anyOf(SchemaContract ...$schemas): static
+    {
+        $instance = clone $this;
+        $instance->anyOf = $schemas;
+        return $instance;
+    }
+
+    public function oneOf(SchemaContract ...$schemas): static
+    {
+        $instance = clone $this;
+        $instance->oneOf = $schemas;
+        return $instance;
+    }
+
     /**
      * @param \GoldSpecDigital\ObjectOrientedOAS\Objects\Schema|null $additionalProperties
      * @return static
@@ -792,6 +808,8 @@ class Schema extends BaseObject implements SchemaContract
             'example' => $this->example,
             'deprecated' => $this->deprecated,
             'allOf' => $this->allOf,
+            'oneOf' => $this->oneOf,
+            'anyOf' => $this->anyOf,
         ]);
     }
 }

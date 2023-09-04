@@ -15,7 +15,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Tests\TestCase;
 class SchemaTest extends TestCase
 {
     /** @test */
-    public function create_array_with_all_parameters_works()
+    public function create_array_with_all_parameters_works(): void
     {
         $schema = Schema::create()
             ->title('Schema title')
@@ -67,7 +67,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_boolean_with_all_parameters_works()
+    public function create_boolean_with_all_parameters_works(): void
     {
         $schema = Schema::create()
             ->title('Schema title')
@@ -105,7 +105,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_integer_with_all_parameters_works()
+    public function create_integer_with_all_parameters_works(): void
     {
         $schema = Schema::create()
             ->title('Schema title')
@@ -155,7 +155,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_number_with_all_parameters_works()
+    public function create_number_with_all_parameters_works(): void
     {
         $schema = Schema::create()
             ->title('Schema title')
@@ -203,7 +203,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_object_with_all_parameters_works()
+    public function create_object_with_all_parameters_works(): void
     {
         $property = Schema::string('id')
             ->format(Schema::FORMAT_UUID);
@@ -261,7 +261,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_string_with_all_parameters_works()
+    public function create_string_with_all_parameters_works(): void
     {
         $schema = Schema::create()
             ->title('Schema title')
@@ -307,7 +307,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_array_with_ref_works()
+    public function create_array_with_ref_works(): void
     {
         $schema = Schema::array()
             ->items(
@@ -323,7 +323,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_object_with_oneOf_works()
+    public function create_object_with_oneOf_works(): void
     {
         $string = Schema::string();
         $number = Schema::number();
@@ -357,7 +357,7 @@ class SchemaTest extends TestCase
     }
 
     /** @test */
-    public function create_schema_with_allOf_works()
+    public function create_schema_with_allOf_works(): void
     {
         $string = Schema::string();
         $number = Schema::number();
@@ -375,6 +375,66 @@ class SchemaTest extends TestCase
                 'title' => 'Schema title',
                 'description' => 'Schema description',
                 'allOf' => [
+                    [
+                        'type' => 'string',
+                    ],
+                    [
+                        'type' => 'number',
+                    ],
+                ],
+            ],
+        ], $response->toArray());
+    }
+
+    /** @test */
+    public function create_schema_with_oneOf_works(): void
+    {
+        $string = Schema::string();
+        $number = Schema::number();
+
+        $schema = Schema::create()
+            ->title('Schema title')
+            ->description('Schema description')
+            ->oneOf($string, $number);
+
+        $response = MediaType::create()
+            ->schema($schema);
+
+        $this->assertEquals([
+            'schema' => [
+                'title' => 'Schema title',
+                'description' => 'Schema description',
+                'oneOf' => [
+                    [
+                        'type' => 'string',
+                    ],
+                    [
+                        'type' => 'number',
+                    ],
+                ],
+            ],
+        ], $response->toArray());
+    }
+
+    /** @test */
+    public function create_schema_with_anyOf_works(): void
+    {
+        $string = Schema::string();
+        $number = Schema::number();
+
+        $schema = Schema::create()
+            ->title('Schema title')
+            ->description('Schema description')
+            ->anyOf($string, $number);
+
+        $response = MediaType::create()
+            ->schema($schema);
+
+        $this->assertEquals([
+            'schema' => [
+                'title' => 'Schema title',
+                'description' => 'Schema description',
+                'anyOf' => [
                     [
                         'type' => 'string',
                     ],
